@@ -1,0 +1,7 @@
+.wrap {
+  text-align: center;
+}
+.outer {
+  display: inline-block;
+  margin: 0 auto;
+}
