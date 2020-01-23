@@ -64,6 +64,7 @@ const locationMap = {
   KOR: { v: 'KR', f: '韓國' },
   THA: { v: 'TH', f: '泰國' },
   USA: { v: 'US', f: '美國' },
+  SGP: { v: 'SG', f: '新加坡' },
 };
 
 const chinaConvert = record => {
@@ -95,7 +96,7 @@ const worldConvert = record => {
   const region = record.id;
   const { conform, dead } = record;
 
-  console.log(locationMap[region].f, conform, locationMap[region] ? locationMap[region].v : null);
+  console.log(record.id, conform, locationMap[region] ? locationMap[region].v : null);
 
   if (locationMap[region]) {
     return [locationMap[region], conform, dead];
@@ -104,7 +105,7 @@ const worldConvert = record => {
 
 function drawRegionsMap() {
   const mainlandChina = [[{ v: 'CN', f: '中國內地' }, 0, 0]];
-  const modifyForMacau = [[{ v: 'CN', f: '廣東' }, 0, 0]];
+  const modifyForHKMO = [[{ v: 'CN', f: '廣東' }, 0, 0]];
   const core = [['Region', '確診人數', '死亡人數']];
 
   worldData.forEach(data => {
@@ -120,16 +121,16 @@ function drawRegionsMap() {
       core.push(r);
       mainlandChina[0][1] += r[1];
       mainlandChina[0][2] += r[2];
-      if (modifyForMacau[0][0].f === r[0].f) {
-        modifyForMacau[0][1] = r[1];
-        modifyForMacau[0][2] = r[2];
+      if (modifyForHKMO[0][0].f === r[0].f) {
+        modifyForHKMO[0][1] = r[1];
+        modifyForHKMO[0][2] = r[2];
       }
     }
   });
 
   const dataWorld = google.visualization.arrayToDataTable(core.concat(mainlandChina));
-  const dataAsia = google.visualization.arrayToDataTable(core);
-  const dataMacau = google.visualization.arrayToDataTable(core.concat(modifyForMacau));
+  const dataChina = google.visualization.arrayToDataTable(core);
+  const dataHKMO = google.visualization.arrayToDataTable(core.concat(modifyForHKMO));
 
   const options = {
     displayMode: 'regions',
@@ -145,10 +146,15 @@ function drawRegionsMap() {
   let chart;
   chart = new google.visualization.GeoChart(document.getElementById('world'));
   chart.draw(dataWorld, { ...options, resolution: 'country' });
-  chart = new google.visualization.GeoChart(document.getElementById('asia'));
-  chart.draw(dataAsia, { ...options, resolution: 'provinces', region: 'CN' });
-  chart = new google.visualization.GeoChart(document.getElementById('macau'));
-  chart.draw(dataMacau, { ...options, resolution: 'auto', region: 'MO' });
+  chart = new google.visualization.GeoChart(document.getElementById('china'));
+  chart.draw(dataChina, { ...options, resolution: 'provinces', region: 'CN' });
+
+  chart = new google.visualization.GeoChart(document.getElementById('hk'));
+  chart.draw(dataHKMO, { ...options, resolution: 'auto', region: 'HK' });
+  chart = new google.visualization.GeoChart(document.getElementById('mo'));
+  chart.draw(dataHKMO, { ...options, resolution: 'auto', region: 'MO' });
+  chart = new google.visualization.GeoChart(document.getElementById('sg'));
+  chart.draw(dataHKMO, { ...options, resolution: 'auto', region: 'SG' });
 }
 
 const request = new XMLHttpRequest();
@@ -156,13 +162,10 @@ const request = new XMLHttpRequest();
 request.open('GET', 'https://cors-anywhere.herokuapp.com/https://3g.dxy.cn/newh5/view/pneumonia');
 request.onload = function() {
   if (request.readyState === 4 && request.status === 200) {
-    const regexp = /getListByCountryTypeService1 = (.*)\}catch(.*)getPV/;
+    const regexp = /getListByCountryTypeService1 = (.*)\}catch(.*)(getPV|getListByCountryTypeService2)/;
     const str = request.responseText;
-    console.log(str);
-    let result;
-    while (!result) {
-      result = str.match(regexp);
-    }
+    // console.log(str);
+    let result = str.match(regexp);
     let dataStr = result[1].substr(0, result[1].indexOf(']') + 1);
     // console.log(dataStr);
     chinaData = JSON.parse(dataStr);
@@ -173,7 +176,7 @@ request.onload = function() {
 request.send(null);
 
 jsonp(
-  'https://zh.wikipedia.org/w/api.php?action=parse&page=2019%E5%B9%B4%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E8%82%BA%E7%82%8E%E4%BA%8B%E4%BB%B6&contentmodel=wikitext&prop=wikitext&format=json',
+  'https://zh.wikipedia.org/w/api.php?action=parse&page=2019%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E8%82%BA%E7%82%8E%E4%BA%8B%E4%BB%B6&contentmodel=wikitext&prop=wikitext&format=json',
   function(data) {
     const regexp = /\|[ ]*{{([A-Z]+)}}[ ]*\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|/;
     let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
