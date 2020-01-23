@@ -65,6 +65,7 @@ const locationMap = {
   THA: { v: 'TH', f: '泰國' },
   USA: { v: 'US', f: '美國' },
   SGP: { v: 'SG', f: '新加坡' },
+  VNM: { v: 'VN', f: '越南' },
 };
 
 const chinaConvert = record => {
@@ -154,7 +155,7 @@ function drawRegionsMap() {
   chart = new google.visualization.GeoChart(document.getElementById('mo'));
   chart.draw(dataHKMO, { ...options, resolution: 'auto', region: 'MO' });
   chart = new google.visualization.GeoChart(document.getElementById('sg'));
-  chart.draw(dataHKMO, { ...options, resolution: 'auto', region: 'SG' });
+  chart.draw(dataWorld, { ...options, resolution: 'auto', region: 'SG' });
 }
 
 const request = new XMLHttpRequest();
