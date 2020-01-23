@@ -1,12 +1,12 @@
 ﻿function jsonp(url, callback) {
-  var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+  const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
   window[callbackName] = function(data) {
     delete window[callbackName];
     document.body.removeChild(script);
     callback(data);
   };
 
-  var script = document.createElement('script');
+  const script = document.createElement('script');
   script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
   document.body.appendChild(script);
 }
@@ -43,6 +43,7 @@ const locationMap = {
   '41': { v: 'CN-41', f: '河南' },
   '50': { v: 'CN-50', f: '重慶' },
   '14': { v: 'CN-14', f: '山西' },
+  '61': { v: 'CN-61', f: '陝西' },
   '43': { v: 'CN-43', f: '湖南' },
   '21': { v: 'CN-21', f: '遼寧' },
   '11': { v: 'CN-11', f: '北京' },
@@ -51,6 +52,11 @@ const locationMap = {
   '33': { v: 'CN-33', f: '浙江' },
   '23': { v: 'CN-23', f: '黑龍江' },
   '32': { v: 'CN-32', f: '江蘇' },
+  '15': { v: 'CN-15', f: '內蒙古' },
+  '54': { v: 'CN-54', f: '西藏' },
+  '62': { v: 'CN-62', f: '甘肅' },
+  '63': { v: 'CN-63', f: '青海' },
+  '65': { v: 'CN-65', f: '新疆' },
   MAC: { v: 'MO', f: '澳門' },
   HKG: { v: 'HK', f: '香港' },
   TWN: { v: 'TW', f: '台灣' },
@@ -71,13 +77,14 @@ const chinaConvert = record => {
     const regexp = /确诊([0-9 ]*)例/;
     let result = [...str.match(regexp)];
     conform = parseInt(result[1].trim());
-    console.log(record.provinceShortName, conform, locationMap[region] ? locationMap[region].v : null);
   }
   if (str.indexOf('死亡') >= 0) {
     const regexp = /死亡([0-9 ]*)例/;
     let result = [...str.match(regexp)];
     dead = parseInt(result[1].trim());
   }
+
+  console.log(record.provinceShortName, conform, locationMap[region] ? locationMap[region].v : null);
 
   if (locationMap[region]) {
     return [locationMap[region], conform, dead];
@@ -87,6 +94,7 @@ const chinaConvert = record => {
 const worldConvert = record => {
   const region = record.id;
   const { conform, dead } = record;
+
   console.log(locationMap[region].f, conform, locationMap[region] ? locationMap[region].v : null);
 
   if (locationMap[region]) {
@@ -95,9 +103,9 @@ const worldConvert = record => {
 };
 
 function drawRegionsMap() {
-  var mainlandChina = [[{ v: 'CN', f: '中國內地' }, 0, 0]];
-  var modifyForMacau = [[{ v: 'CN', f: '廣東' }, 0, 0]];
-  var core = [['Region', '確診人數', '死亡人數']];
+  const mainlandChina = [[{ v: 'CN', f: '中國內地' }, 0, 0]];
+  const modifyForMacau = [[{ v: 'CN', f: '廣東' }, 0, 0]];
+  const core = [['Region', '確診人數', '死亡人數']];
 
   worldData.forEach(data => {
     const r = worldConvert(data);
@@ -108,24 +116,22 @@ function drawRegionsMap() {
 
   chinaData.forEach(data => {
     const r = chinaConvert(data);
-    if (r) {
-      if (r[1] + r[2] > 0) {
-        core.push(r);
-        mainlandChina[0][1] += r[1];
-        mainlandChina[0][2] += r[2];
-        if (modifyForMacau[0][0].f === r[0].f) {
-          modifyForMacau[0][1] = r[1];
-          modifyForMacau[0][2] = r[2];
-        }
+    if (r && r[1] + r[2] > 0) {
+      core.push(r);
+      mainlandChina[0][1] += r[1];
+      mainlandChina[0][2] += r[2];
+      if (modifyForMacau[0][0].f === r[0].f) {
+        modifyForMacau[0][1] = r[1];
+        modifyForMacau[0][2] = r[2];
       }
     }
   });
 
-  var dataWorld = google.visualization.arrayToDataTable(core.concat(mainlandChina));
-  var dataAsia = google.visualization.arrayToDataTable(core);
-  var dataMacau = google.visualization.arrayToDataTable(core.concat(modifyForMacau));
+  const dataWorld = google.visualization.arrayToDataTable(core.concat(mainlandChina));
+  const dataAsia = google.visualization.arrayToDataTable(core);
+  const dataMacau = google.visualization.arrayToDataTable(core.concat(modifyForMacau));
 
-  var options = {
+  const options = {
     displayMode: 'regions',
     legend: 'none',
     enableRegionInteractivity: 'true',
@@ -136,22 +142,27 @@ function drawRegionsMap() {
     colorAxis: { maxValue: mainlandChina[0][1], colors: ['red'] },
   };
 
-  var chart = new google.visualization.GeoChart(document.getElementById('world'));
+  let chart;
+  chart = new google.visualization.GeoChart(document.getElementById('world'));
   chart.draw(dataWorld, { ...options, resolution: 'country' });
-  var chart = new google.visualization.GeoChart(document.getElementById('asia'));
+  chart = new google.visualization.GeoChart(document.getElementById('asia'));
   chart.draw(dataAsia, { ...options, resolution: 'provinces', region: 'CN' });
-  var chart = new google.visualization.GeoChart(document.getElementById('macau'));
+  chart = new google.visualization.GeoChart(document.getElementById('macau'));
   chart.draw(dataMacau, { ...options, resolution: 'auto', region: 'MO' });
 }
 
-var request = new XMLHttpRequest();
+const request = new XMLHttpRequest();
+
 request.open('GET', 'https://cors-anywhere.herokuapp.com/https://3g.dxy.cn/newh5/view/pneumonia');
 request.onload = function() {
   if (request.readyState === 4 && request.status === 200) {
     const regexp = /getListByCountryTypeService1 = (.*)\}catch(.*)getPV/;
     const str = request.responseText;
-    // console.log(str);
-    let result = str.match(regexp);
+    console.log(str);
+    let result;
+    while (!result) {
+      result = str.match(regexp);
+    }
     let dataStr = result[1].substr(0, result[1].indexOf(']') + 1);
     // console.log(dataStr);
     chinaData = JSON.parse(dataStr);
@@ -159,7 +170,6 @@ request.onload = function() {
     showMap();
   }
 };
-
 request.send(null);
 
 jsonp(
@@ -167,7 +177,7 @@ jsonp(
   function(data) {
     const regexp = /\|[ ]*{{([A-Z]+)}}[ ]*\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|/;
     let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
-    console.log(str);
+    // console.log(str);
     while (true) {
       let result = str.match(regexp);
       if (!result) {
