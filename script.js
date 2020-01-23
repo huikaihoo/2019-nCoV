@@ -1,6 +1,31 @@
-﻿let chinaData = [];
+﻿function jsonp(url, callback) {
+  var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    document.body.removeChild(script);
+    callback(data);
+  };
 
-const chinaMap = {
+  var script = document.createElement('script');
+  script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+  document.body.appendChild(script);
+}
+
+const removeBracket = str => {
+  // return parseInt(str.replace(/\(.*\)/, '').trim());
+  return parseInt(
+    str
+      .replace('(', '')
+      .replace(')', '')
+      .replace('*', '')
+      .trim()
+  );
+};
+
+let chinaData = [];
+let worldData = [];
+
+const locationMap = {
   '42': { v: 'CN-42', f: '湖北' },
   '13': { v: 'CN-13', f: '河北' },
   '53': { v: 'CN-53', f: '雲南' },
@@ -26,6 +51,13 @@ const chinaMap = {
   '33': { v: 'CN-33', f: '浙江' },
   '23': { v: 'CN-23', f: '黑龍江' },
   '32': { v: 'CN-32', f: '江蘇' },
+  MAC: { v: 'MO', f: '澳門' },
+  HKG: { v: 'HK', f: '香港' },
+  TWN: { v: 'TW', f: '台灣' },
+  JPN: { v: 'JP', f: '日本' },
+  KOR: { v: 'KR', f: '韓國' },
+  THA: { v: 'TH', f: '泰國' },
+  USA: { v: 'US', f: '美國' },
 };
 
 const chinaConvert = record => {
@@ -39,7 +71,7 @@ const chinaConvert = record => {
     const regexp = /确诊([0-9 ]*)例/;
     let result = [...str.match(regexp)];
     conform = parseInt(result[1].trim());
-    console.log(record.provinceShortName, conform);
+    console.log(record.provinceShortName, conform, locationMap[region] ? locationMap[region].v : null);
   }
   if (str.indexOf('死亡') >= 0) {
     const regexp = /死亡([0-9 ]*)例/;
@@ -47,24 +79,32 @@ const chinaConvert = record => {
     dead = parseInt(result[1].trim());
   }
 
-  if (chinaMap[region]) {
-    return [chinaMap[region], conform, dead];
+  if (locationMap[region]) {
+    return [locationMap[region], conform, dead];
+  }
+};
+
+const worldConvert = record => {
+  const region = record.id;
+  const { conform, dead } = record;
+  console.log(locationMap[region].f, conform, locationMap[region] ? locationMap[region].v : null);
+
+  if (locationMap[region]) {
+    return [locationMap[region], conform, dead];
   }
 };
 
 function drawRegionsMap() {
   var mainlandChina = [[{ v: 'CN', f: '中國內地' }, 0, 0]];
   var modifyForMacau = [[{ v: 'CN', f: '廣東' }, 0, 0]];
-  var core = [
-    ['Region', '確診人數', '死亡人數'],
-    [{ v: 'JP', f: '日本' }, 1, 0],
-    [{ v: 'KR', f: '韓國' }, 1, 0],
-    [{ v: 'TH', f: '泰國' }, 4, 0],
-    [{ v: 'US', f: '美國' }, 1, 0],
-    [{ v: 'TW', f: '台灣' }, 1, 0],
-    [{ v: 'HK', f: '香港' }, 2, 0],
-    [{ v: 'MO', f: '澳門' }, 1, 0],
-  ];
+  var core = [['Region', '確診人數', '死亡人數']];
+
+  worldData.forEach(data => {
+    const r = worldConvert(data);
+    if (r) {
+      core.push(r);
+    }
+  });
 
   chinaData.forEach(data => {
     const r = chinaConvert(data);
@@ -93,7 +133,7 @@ function drawRegionsMap() {
     width: 1000,
     height: 624,
     sizeAxis: { minSize: 5, maxSize: 5 },
-    colorAxis: { colors: ['red'] },
+    colorAxis: { maxValue: mainlandChina[0][1], colors: ['red'] },
   };
 
   var chart = new google.visualization.GeoChart(document.getElementById('world'));
@@ -110,18 +150,49 @@ request.onload = function() {
   if (request.readyState === 4 && request.status === 200) {
     const regexp = /getListByCountryTypeService1 = (.*)\}catch(.*)getPV/;
     const str = request.responseText;
-    console.log(str);
-    let result = [...str.match(regexp)];
+    // console.log(str);
+    let result = str.match(regexp);
     let dataStr = result[1].substr(0, result[1].indexOf(']') + 1);
-    console.log(dataStr);
+    // console.log(dataStr);
     chinaData = JSON.parse(dataStr);
-    console.log(chinaData);
+    console.log('china', chinaData);
+    showMap();
+  }
+};
 
+request.send(null);
+
+jsonp(
+  'https://zh.wikipedia.org/w/api.php?action=parse&page=2019%E5%B9%B4%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E8%82%BA%E7%82%8E%E4%BA%8B%E4%BB%B6&contentmodel=wikitext&prop=wikitext&format=json',
+  function(data) {
+    const regexp = /\|[ ]*{{([A-Z]+)}}[ ]*\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|/;
+    let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
+    console.log(str);
+    while (true) {
+      let result = str.match(regexp);
+      if (!result) {
+        break;
+      }
+      let record = {
+        id: result[1].trim(),
+        conform: removeBracket(result[2]),
+        dead: removeBracket(result[3]),
+      };
+      // console.log(record);
+      worldData.push(record);
+      let idx = result.index + result[0].length;
+      str = str.substr(idx);
+    }
+    console.log('world', worldData);
+    showMap();
+  }
+);
+
+const showMap = () => {
+  if (chinaData.length > 0 && worldData.length > 0) {
     google.charts.load('current', {
       packages: ['geochart'],
     });
     google.charts.setOnLoadCallback(drawRegionsMap);
   }
 };
-
-request.send(null);
