@@ -25,6 +25,10 @@ const removeBracket = str => {
 let chinaData = [];
 let worldData = [];
 
+const mainlandChina = [[{ v: 'CN', f: '中國內地' }, 0, 0]];
+const modifyForHKMO = [[{ v: 'CN', f: '廣東' }, 0, 0]];
+const core = [['Region', '確診人數', '死亡人數']];
+
 const locationMap = {
   '42': { v: 'CN-42', f: '湖北' },
   '13': { v: 'CN-13', f: '河北' },
@@ -72,13 +76,13 @@ const chinaConvert = record => {
   const region = record.provinceId;
   const str = record.tags;
 
-  let conform = 0,
+  let confirm = 0,
     dead = 0;
 
   if (str.indexOf('确诊') >= 0) {
     const regexp = /确诊([0-9 ]*)例/;
     let result = [...str.match(regexp)];
-    conform = parseInt(result[1].trim());
+    confirm = parseInt(result[1].trim());
   }
   if (str.indexOf('死亡') >= 0) {
     const regexp = /死亡([0-9 ]*)例/;
@@ -86,29 +90,34 @@ const chinaConvert = record => {
     dead = parseInt(result[1].trim());
   }
 
-  console.log(record.provinceShortName, conform, locationMap[region] ? locationMap[region].v : null);
+  console.log(record.provinceShortName, confirm, locationMap[region] ? locationMap[region].v : null);
 
   if (locationMap[region]) {
-    return [locationMap[region], conform, dead];
+    return [locationMap[region], confirm, dead];
   }
 };
 
 const worldConvert = record => {
   const region = record.id;
-  const { conform, dead } = record;
+  const { confirm, dead } = record;
 
-  console.log(record.id, conform, locationMap[region] ? locationMap[region].v : null);
+  console.log(record.id, confirm, locationMap[region] ? locationMap[region].v : null);
 
   if (locationMap[region]) {
-    return [locationMap[region], conform, dead];
+    return [locationMap[region], confirm, dead];
   }
 };
 
-function drawRegionsMap() {
-  const mainlandChina = [[{ v: 'CN', f: '中國內地' }, 0, 0]];
-  const modifyForHKMO = [[{ v: 'CN', f: '廣東' }, 0, 0]];
-  const core = [['Region', '確診人數', '死亡人數']];
+const addRow = (table, record) => {
+  const row = table.insertRow();
+  for (let data of record) {
+    const cell = row.insertCell();
+    cell.innerHTML = data.f ? data.f : data;
+  }
+};
 
+function processData() {
+  window.worldData = worldData;
   worldData.forEach(data => {
     const r = worldConvert(data);
     if (r) {
@@ -129,6 +138,36 @@ function drawRegionsMap() {
     }
   });
 
+  drawRegionsMap(drawTable());
+}
+
+const drawTable = () => {
+  const table = document.getElementById('table');
+  let confirm = 0,
+    dead = 0;
+
+  for (let record of mainlandChina) {
+    addRow(table, record);
+    confirm += record[1];
+    dead += record[2];
+  }
+
+  for (let record of core) {
+    // console.log(record[0], record[0].v);
+    if (record[0].v && record[0].v.indexOf('CN-') !== 0) {
+      addRow(table, record);
+      confirm += record[1];
+      dead += record[2];
+    }
+  }
+
+  document.getElementById('confirm').innerHTML = confirm;
+  document.getElementById('dead').innerHTML = dead;
+
+  return confirm;
+};
+
+const drawRegionsMap = maxValue => {
   const dataWorld = google.visualization.arrayToDataTable(core.concat(mainlandChina));
   const dataChina = google.visualization.arrayToDataTable(core);
   const dataHKMO = google.visualization.arrayToDataTable(core.concat(modifyForHKMO));
@@ -141,7 +180,7 @@ function drawRegionsMap() {
     width: 1000,
     height: 624,
     sizeAxis: { minSize: 5, maxSize: 5 },
-    colorAxis: { maxValue: mainlandChina[0][1], colors: ['red'] },
+    colorAxis: { maxValue, colors: ['red'] },
   };
 
   let chart;
@@ -156,14 +195,14 @@ function drawRegionsMap() {
   chart.draw(dataHKMO, { ...options, resolution: 'auto', region: 'MO' });
   chart = new google.visualization.GeoChart(document.getElementById('sg'));
   chart.draw(dataWorld, { ...options, resolution: 'auto', region: 'SG' });
-}
+};
 
 const request = new XMLHttpRequest();
 
 request.open('GET', 'https://cors-anywhere.herokuapp.com/https://3g.dxy.cn/newh5/view/pneumonia');
 request.onload = function() {
   if (request.readyState === 4 && request.status === 200) {
-    const regexp = /getListByCountryTypeService1 = (.*)\}catch(.*)(getPV|getListByCountryTypeService2)/;
+    const regexp = /getListByCountryTypeService1 = (.*)\}catch(.*)get/;
     const str = request.responseText;
     // console.log(str);
     let result = str.match(regexp);
@@ -189,7 +228,7 @@ jsonp(
       }
       let record = {
         id: result[1].trim(),
-        conform: removeBracket(result[2]),
+        confirm: removeBracket(result[2]),
         dead: removeBracket(result[3]),
       };
       // console.log(record);
@@ -197,6 +236,7 @@ jsonp(
       let idx = result.index + result[0].length;
       str = str.substr(idx);
     }
+    worldData = worldData.sort((a, b) => (b.confirm === a.confirm ? a.id.localeCompare(b.id) : b.confirm - a.confirm));
     console.log('world', worldData);
     showMap();
   }
@@ -207,6 +247,6 @@ const showMap = () => {
     google.charts.load('current', {
       packages: ['geochart'],
     });
-    google.charts.setOnLoadCallback(drawRegionsMap);
+    google.charts.setOnLoadCallback(processData);
   }
 };

@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "fix": "prettier --write '**/*.{css,js,html}'"
+    "fix": "prettier --write '**/*.{css,js,html}'",
+    "minify": "uglifyjs script.js > script.min.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "prettier": "^1.19.1"
-  }
+    "prettier": "^1.19.1",
+    "uglify-es": "^3.3.9"
+  },
+  "dependencies": {}
 }
