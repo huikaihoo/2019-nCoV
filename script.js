@@ -71,6 +71,7 @@ const locationMap = {
   SGP: { v: 'SG', f: '新加坡' },
   VNM: { v: 'VN', f: '越南' },
   KSA: { v: 'SA', f: '沙特阿拉伯' },
+  NEP: { v: 'NP', f: '尼泊爾' },
 };
 
 const chinaConvert = record => {
