@@ -100,7 +100,7 @@ const chinaConvert = record => {
   } else if (record.tags && record.tags.indexOf('死亡') >= 0) {
     str = record.tags;
   } else if (record.deadCount) {
-    confirm = record.deadCount;
+    dead = record.deadCount;
   } else {
     str = '';
   }
@@ -133,6 +133,9 @@ const addRow = (table, record) => {
   for (let data of record) {
     const cell = row.insertCell();
     cell.innerHTML = data.f ? data.f : data;
+    if (!data.f) {
+      cell.className = 'right';
+    }
   }
 };
 
@@ -243,32 +246,29 @@ request.onload = function() {
 };
 request.send(null);
 
-jsonp(
-  'https://zh.wikipedia.org/w/api.php?action=parse&page=2019%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E8%82%BA%E7%82%8E%E4%BA%8B%E4%BB%B6&contentmodel=wikitext&prop=wikitext&format=json',
-  function(data) {
-    const regexp = /\|[ ]*{{([A-Z]+)}}[ ]*\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|/;
-    let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
-    // console.log(str);
-    while (true) {
-      let result = str.match(regexp);
-      if (!result) {
-        break;
-      }
-      let record = {
-        id: result[1].trim(),
-        confirm: removeBracket(result[2]),
-        dead: removeBracket(result[3]),
-      };
-      // console.log(record);
-      worldData.push(record);
-      let idx = result.index + result[0].length;
-      str = str.substr(idx);
+jsonp('https://zh.wikipedia.org/w/api.php?action=parse&page=2019%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E8%82%BA%E7%82%8E%E4%BA%8B%E4%BB%B6&contentmodel=wikitext&prop=wikitext&format=json', function(data) {
+  const regexp = /\|[ ]*{{([A-Z]+)}}[ ]*\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|/;
+  let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
+  // console.log(str);
+  while (true) {
+    let result = str.match(regexp);
+    if (!result) {
+      break;
     }
-    worldData = worldData.sort((a, b) => (b.confirm === a.confirm ? a.id.localeCompare(b.id) : b.confirm - a.confirm));
-    console.log('world', worldData);
-    showMap();
+    let record = {
+      id: result[1].trim(),
+      confirm: removeBracket(result[2]),
+      dead: removeBracket(result[3]),
+    };
+    // console.log(record);
+    worldData.push(record);
+    let idx = result.index + result[0].length;
+    str = str.substr(idx);
   }
-);
+  worldData = worldData.sort((a, b) => (b.confirm === a.confirm ? a.id.localeCompare(b.id) : b.confirm - a.confirm));
+  console.log('world', worldData);
+  showMap();
+});
 
 const showMap = () => {
   if (chinaData.length > 0 && worldData.length > 0) {

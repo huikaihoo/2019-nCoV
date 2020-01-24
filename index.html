@@ -1,20 +1,15 @@
 <html>
   <head>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/purecss@1.0.1/build/pure-min.css"
-      integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous" />
     <link rel="stylesheet" href="./index.min.css" />
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="./script.min.js" defer></script>
-    <title>2019－2020年新型冠狀病毒肺炎 (武漢肺炎) 病例分佈圖</title>
+    <title>2019－2020年新型冠狀病毒肺炎 (武漢肺炎) 病例分佈</title>
   </head>
   <body>
     <div class="wrap">
       <div class="outer">
-        <h1>2019－2020年新型冠狀病毒肺炎 (武漢肺炎) 病例分佈圖</h1>
+        <h1>2019－2020年新型冠狀病毒肺炎 (武漢肺炎) 病例分佈</h1>
       </div>
     </div>
     <div class="wrap">
@@ -31,8 +26,8 @@
           <thead>
             <tr>
               <th>總人數</th>
-              <th id="confirm">0</th>
-              <th id="dead">0</th>
+              <th class="right" id="confirm">0</th>
+              <th class="right" id="dead">0</th>
             </tr>
           </thead>
         </table>
@@ -54,15 +49,12 @@
     <div class="wrap">
       <div class="outer" id="sg" />
     </div>
+    <hr />
+    資料來源: <a href="https://3g.dxy.cn/newh5/view/pneumonia" target="_blank">丁香園</a> (中國內地) /
+    <a href="https://zh.wikipedia.org/wiki/2019%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E8%82%BA%E7%82%8E%E4%BA%8B%E4%BB%B6" target="_blank">維基百科</a> (其他地區)
     <br />
-    資料來源(中國內地): <a href="https://3g.dxy.cn/newh5/view/pneumonia" target="_blank">丁香園</a>
+    Copyright © 2020 by <a href="https://www.github.com/huikaihoo/" target="_blank">Simon Hui</a>
     <br />
-    資料來源(其他地區):
-    <a
-      href="https://zh.wikipedia.org/wiki/2019%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E8%82%BA%E7%82%8E%E4%BA%8B%E4%BB%B6"
-      target="_blank"
-      >維基百科</a
-    >
     <br />
   </body>
 </html>
