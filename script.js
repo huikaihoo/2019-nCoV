@@ -170,7 +170,7 @@ function processData() {
   });
 
   drawRegionsMap(drawTable());
-  document.getElementById('update').innerText = '更新時間: ' + moment().format('YYYY-MM-DD hh:mm:ss');
+  document.getElementById('update').innerText = '更新時間: ' + moment().format('YYYY-MM-DD HH:mm:ss');
 }
 
 const drawTable = () => {
