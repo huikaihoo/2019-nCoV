@@ -77,6 +77,8 @@ const locationMap = {
   GBR: { v: 'GB', f: '英國' },
   CAN: { v: 'CA', f: '加拿大' },
   ITA: { v: 'IT', f: '意大利' },
+  MYS: { v: 'MY', f: '馬來西亞' },
+  PHL: { v: 'PH', f: '菲律賓' },
 };
 
 const chinaConvert = record => {
