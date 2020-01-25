@@ -72,6 +72,11 @@ const locationMap = {
   VNM: { v: 'VN', f: '越南' },
   KSA: { v: 'SA', f: '沙特阿拉伯' },
   NEP: { v: 'NP', f: '尼泊爾' },
+  FRA: { v: 'FR', f: '法國' },
+  AUS: { v: 'AU', f: '澳洲' },
+  GBR: { v: 'GB', f: '英國' },
+  CAN: { v: 'CA', f: '加拿大' },
+  ITA: { v: 'IT', f: '意大利' },
 };
 
 const chinaConvert = record => {
@@ -163,6 +168,7 @@ function processData() {
   });
 
   drawRegionsMap(drawTable());
+  document.getElementById('update').innerText = '更新時間: ' + moment().format('YYYY-MM-DD hh:mm:ss');
 }
 
 const drawTable = () => {
