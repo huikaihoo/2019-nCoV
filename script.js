@@ -63,6 +63,7 @@ const locationMap = {
   新疆: { v: 'CN-65', f: '新疆' },
   MAC: { v: 'MO', f: '澳門' },
   HKG: { v: 'HK', f: '香港' },
+  ROC: { v: 'TW', f: '台灣' },
   TWN: { v: 'TW', f: '台灣' },
   JPN: { v: 'JP', f: '日本' },
   KOR: { v: 'KR', f: '韓國' },
