@@ -80,6 +80,8 @@ const locationMap = {
   ITA: { v: 'IT', f: '意大利' },
   MYS: { v: 'MY', f: '馬來西亞' },
   PHL: { v: 'PH', f: '菲律賓' },
+  KHM: { v: 'KH', f: '柬埔寨' },
+  AUT: { v: 'AT', f: '奧地利' },
 };
 
 const chinaConvert = record => {
