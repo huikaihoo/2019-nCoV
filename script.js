@@ -82,6 +82,8 @@ const locationMap = {
   PHL: { v: 'PH', f: '菲律賓' },
   KHM: { v: 'KH', f: '柬埔寨' },
   AUT: { v: 'AT', f: '奧地利' },
+  GER: { v: 'DE', f: '德國' },
+  LKA: { v: 'LK', f: '斯里蘭卡' },
 };
 
 const chinaConvert = record => {
