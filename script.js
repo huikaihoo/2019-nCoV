@@ -260,7 +260,7 @@ request.onload = function() {
 };
 request.send(null);
 
-jsonp('https://zh.wikipedia.org/w/api.php?action=parse&page=2019%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E8%82%BA%E7%82%8E%E4%BA%8B%E4%BB%B6&contentmodel=wikitext&prop=wikitext&format=json', function(data) {
+jsonp('https://zh.wikipedia.org/w/api.php?action=parse&page=Template:2019－2020年新型冠狀病毒肺炎事件伤亡人数&contentmodel=wikitext&prop=wikitext&format=json', function(data) {
   const regexp = /\|[ ]*{{([A-Z]+)}}[ ]*\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|/;
   let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
   // console.log(str);
