@@ -93,12 +93,12 @@ const chinaConvert = record => {
     confirm = 0,
     dead = 0;
 
-  if (record.tags && record.tags.indexOf('确诊') >= 0) {
+  if (record.confirmedCount) {
+    confirm = record.confirmedCount;
+  } else if (record.tags && record.tags.indexOf('确诊') >= 0) {
     str = record.tags;
   } else if (record.comment && record.comment.indexOf('确诊') >= 0) {
     str = record.comment;
-  } else if (record.confirmedCount) {
-    confirm = record.confirmedCount;
   } else {
     str = '';
   }
@@ -108,12 +108,12 @@ const chinaConvert = record => {
     confirm = parseInt(result[1].trim());
   }
 
-  if (record.comment && record.comment.indexOf('死亡') >= 0) {
+  if (record.deadCount) {
+    dead = record.deadCount;
+  } else if (record.comment && record.comment.indexOf('死亡') >= 0) {
     str = record.comment;
   } else if (record.tags && record.tags.indexOf('死亡') >= 0) {
     str = record.tags;
-  } else if (record.deadCount) {
-    dead = record.deadCount;
   } else {
     str = '';
   }
