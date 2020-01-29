@@ -84,6 +84,7 @@ const locationMap = {
   AUT: { v: 'AT', f: '奧地利' },
   GER: { v: 'DE', f: '德國' },
   LKA: { v: 'LK', f: '斯里蘭卡' },
+  UAE: { v: 'AE', f: '阿聯酋' },
 };
 
 const chinaConvert = record => {
