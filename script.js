@@ -65,6 +65,7 @@ const locationMap = {
   HKG: { v: 'HK', f: '香港' },
   ROC: { v: 'TW', f: '台灣' },
   TWN: { v: 'TW', f: '台灣' },
+  TW: { v: 'TW', f: '台灣' },
   JPN: { v: 'JP', f: '日本' },
   KOR: { v: 'KR', f: '韓國' },
   THA: { v: 'TH', f: '泰國' },
@@ -85,6 +86,7 @@ const locationMap = {
   GER: { v: 'DE', f: '德國' },
   LKA: { v: 'LK', f: '斯里蘭卡' },
   UAE: { v: 'AE', f: '阿聯酋' },
+  FIN: { v: 'FI', f: '芬蘭' },
 };
 
 const chinaConvert = record => {
