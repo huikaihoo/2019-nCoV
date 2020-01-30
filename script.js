@@ -79,6 +79,7 @@ const locationMap = {
   GBR: { v: 'GB', f: '英國' },
   CAN: { v: 'CA', f: '加拿大' },
   ITA: { v: 'IT', f: '意大利' },
+  MAS: { v: 'MY', f: '馬來西亞' },
   MYS: { v: 'MY', f: '馬來西亞' },
   PHL: { v: 'PH', f: '菲律賓' },
   KHM: { v: 'KH', f: '柬埔寨' },
@@ -87,6 +88,7 @@ const locationMap = {
   LKA: { v: 'LK', f: '斯里蘭卡' },
   UAE: { v: 'AE', f: '阿聯酋' },
   FIN: { v: 'FI', f: '芬蘭' },
+  IND: { v: 'IN', f: '印度' },
 };
 
 const chinaConvert = record => {
