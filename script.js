@@ -90,6 +90,7 @@ const locationMap = {
   UAE: { v: 'AE', f: '阿聯酋' },
   FIN: { v: 'FI', f: '芬蘭' },
   IND: { v: 'IN', f: '印度' },
+  RUS: { v: 'RU', f: '俄羅斯' },
 };
 
 const chinaConvert = record => {
@@ -152,6 +153,9 @@ const addRow = (table, record) => {
   for (let data of record) {
     const cell = row.insertCell();
     cell.innerHTML = data.f ? data.f : data;
+    if (cell.innerHTML === '香港') {
+      cell.innerHTML = '<a href="https://wars.vote4.hk" target="_blank">香港</a> ';
+    }
     if (!data.f) {
       cell.className = 'right';
     }
