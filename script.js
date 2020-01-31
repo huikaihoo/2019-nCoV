@@ -77,6 +77,7 @@ const locationMap = {
   FRA: { v: 'FR', f: '法國' },
   AUS: { v: 'AU', f: '澳洲' },
   GBR: { v: 'GB', f: '英國' },
+  UK: { v: 'GB', f: '英國' },
   CAN: { v: 'CA', f: '加拿大' },
   ITA: { v: 'IT', f: '意大利' },
   MAS: { v: 'MY', f: '馬來西亞' },
