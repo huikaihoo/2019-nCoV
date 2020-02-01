@@ -25,6 +25,7 @@ const removeBracket = str => {
 let chinaData = [];
 let worldData = [];
 
+const chinaEmoji = countryFlagEmoji.get('CN').emoji;
 const mainlandChina = [[{ v: 'CN', f: '中國內地' }, 0, 0]];
 const modifyForHKMO = [[{ v: 'CN', f: '廣東' }, 0, 0]];
 const core = [['Region', '確診人數', '死亡人數']];
@@ -164,7 +165,6 @@ const addRow = (table, record) => {
     } else {
       cell.innerHTML = data;
     }
-
     if (!data.f) {
       cell.className = 'right';
     }
@@ -193,7 +193,8 @@ function processData() {
     }
   });
 
-  drawRegionsMap(drawTable());
+  drawTable();
+  drawRegionsMap();
   document.getElementById('update').innerText = '更新時間: ' + moment().format('YYYY-MM-DD HH:mm:ss');
 }
 
@@ -236,7 +237,16 @@ const drawTable = () => {
   return confirm;
 };
 
-const drawRegionsMap = maxValue => {
+const drawRegionsMap = () => {
+  core.forEach((record, i) => {
+    let emoji = record[0].v ? countryFlagEmoji.get(record[0].v.substring(0, 2)).emoji : null;
+    if (emoji) {
+      core[i][0].f = emoji + record[0].f;
+    }
+  });
+  mainlandChina[0][0].f = chinaEmoji + mainlandChina[0][0].f;
+  modifyForHKMO[0][0].f = chinaEmoji + mainlandChina[0][0].f;
+
   const dataWorld = google.visualization.arrayToDataTable(core.concat(mainlandChina));
   const dataChina = google.visualization.arrayToDataTable(core);
   const dataHKMO = google.visualization.arrayToDataTable(core.concat(modifyForHKMO));
@@ -249,7 +259,7 @@ const drawRegionsMap = maxValue => {
     width: 1000,
     height: 624,
     sizeAxis: { minSize: 5, maxSize: 5 },
-    colorAxis: { maxValue, colors: ['red'] },
+    colorAxis: { colors: ['red'] },
   };
 
   let chart;
