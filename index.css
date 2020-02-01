@@ -1,3 +1,6 @@
+html * {
+  font-family: 'Noto Sans TC', sans-serif !important;
+}
 .wrap {
   text-align: center;
 }

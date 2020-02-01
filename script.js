@@ -214,6 +214,10 @@ const drawTable = () => {
   document.getElementById('dead').innerHTML = dead;
 
   $('#table').DataTable({
+    language: {
+      search: '搜尋:',
+    },
+    info: false,
     scrollY: '50vh',
     scrollCollapse: true,
     paging: false,
