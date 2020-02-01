@@ -92,6 +92,7 @@ const locationMap = {
   IND: { v: 'IN', f: '印度' },
   RUS: { v: 'RU', f: '俄羅斯' },
   SWE: { v: 'SE', f: '瑞典' },
+  ESP: { v: 'ES', f: '西班牙' },
 };
 
 const chinaConvert = record => {
