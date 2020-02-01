@@ -191,12 +191,12 @@ function processData() {
 }
 
 const drawTable = () => {
-  const table = document.getElementById('table');
+  const tbody = document.getElementById('tbody');
   let confirm = 0,
     dead = 0;
 
   for (let record of mainlandChina) {
-    addRow(table, record);
+    addRow(tbody, record);
     confirm += record[1];
     dead += record[2];
   }
@@ -204,7 +204,7 @@ const drawTable = () => {
   for (let record of core) {
     const regexp = /^[A-Za-z]+$/;
     if (record[0].v && record[0].v.match(regexp)) {
-      addRow(table, record);
+      addRow(tbody, record);
       confirm += record[1];
       dead += record[2];
     }
@@ -213,6 +213,15 @@ const drawTable = () => {
   document.getElementById('confirm').innerHTML = confirm;
   document.getElementById('dead').innerHTML = dead;
 
+  $('#table').DataTable({
+    scrollY: '50vh',
+    scrollCollapse: true,
+    paging: false,
+    order: [
+      [1, 'desc'],
+      [2, 'desc'],
+    ],
+  });
   return confirm;
 };
 
