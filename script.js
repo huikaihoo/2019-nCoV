@@ -245,7 +245,7 @@ const drawRegionsMap = () => {
     }
   });
   mainlandChina[0][0].f = chinaEmoji + mainlandChina[0][0].f;
-  modifyForHKMO[0][0].f = chinaEmoji + mainlandChina[0][0].f;
+  modifyForHKMO[0][0].f = chinaEmoji + modifyForHKMO[0][0].f;
 
   const dataWorld = google.visualization.arrayToDataTable(core.concat(mainlandChina));
   const dataChina = google.visualization.arrayToDataTable(core);
