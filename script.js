@@ -154,10 +154,17 @@ const addRow = (table, record) => {
   const row = table.insertRow();
   for (let data of record) {
     const cell = row.insertCell();
-    cell.innerHTML = data.f ? data.f : data;
-    if (cell.innerHTML === '香港') {
-      cell.innerHTML = '<a href="https://wars.vote4.hk" target="_blank">香港</a> ';
+    if (data.f) {
+      if (data.f === '香港') {
+        cell.innerHTML = '<a href="https://wars.vote4.hk" target="_blank">香港</a> ';
+      } else {
+        cell.innerHTML = data.f;
+      }
+      cell.innerHTML = countryFlagEmoji.get(data.v).emoji + ' ' + cell.innerHTML;
+    } else {
+      cell.innerHTML = data;
     }
+
     if (!data.f) {
       cell.className = 'right';
     }
