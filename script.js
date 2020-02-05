@@ -11,13 +11,13 @@
   document.body.appendChild(script);
 }
 
-const removeBracket = str => {
-  // return parseInt(str.replace(/\(.*\)/, '').trim());
+const parseCount = str => {
   return parseInt(
     str
       .replace('(', '')
       .replace(')', '')
       .replace('*', '')
+      .replace(',', '')
       .trim()
   );
 };
@@ -304,18 +304,19 @@ request.onload = function() {
 request.send(null);
 
 jsonp('https://zh.wikipedia.org/w/api.php?action=parse&page=Template:2019%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E7%96%AB%E6%83%85%E5%82%B7%E4%BA%A1%E4%BA%BA%E6%95%B8&contentmodel=wikitext&prop=wikitext&format=json', function(data) {
-  const regexp = /\|[ ]*{{([A-Z]+)}}[ ]*\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|([0-9\(\) ]+)\|/;
+  const regexp = /{{([A-Z]+)}}[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|/;
   let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
   // console.log(str);
   while (true) {
     let result = str.match(regexp);
+    // console.log(result);
     if (!result) {
       break;
     }
     let record = {
       id: result[1].trim(),
-      confirm: removeBracket(result[2]),
-      dead: removeBracket(result[3]),
+      confirm: parseCount(result[2]),
+      dead: parseCount(result[3]),
     };
     // console.log(record);
     worldData.push(record);
