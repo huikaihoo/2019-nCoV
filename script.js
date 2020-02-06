@@ -95,6 +95,8 @@ const locationMap = {
   SWE: { v: 'SE', f: '瑞典' },
   ESP: { v: 'ES', f: '西班牙' },
   BEL: { v: 'BE', f: '比利時' },
+  NKO: { v: 'KP', f: '北韓' },
+  DPRK: { v: 'KP', f: '北韓' },
 };
 
 const chinaConvert = record => {
@@ -279,26 +281,28 @@ const drawRegionsMap = () => {
 
 let retry = 0;
 let request = new XMLHttpRequest();
-request.open('GET', 'https://cors-anywhere.herokuapp.com/https://3g.dxy.cn/newh5/view/pneumonia');
+request.open('GET', 'https://cors-anywhere.herokuapp.com/https://ncov.dxy.cn/ncovh5/view/pneumonia');
 request.onload = function() {
+  let result;
   if (request.readyState === 4 && request.status === 200) {
     const regexp = /getAreaStat = (.*)\}catch(.*)get/;
     const str = request.responseText;
     // console.log(str);
-    let result = str.match(regexp);
+    result = str.match(regexp);
+  }
 
-    if (result) {
-      let dataStr = result[1].substr(0, result[1].indexOf(']}catch(e)') + 1);
-      // console.log(dataStr);
-      chinaData = JSON.parse(dataStr);
-      console.log('china', chinaData);
-      showMap();
-    } else {
-      retry++;
-      console.log('retry', retry);
-      request.open('GET', 'https://cors-anywhere.herokuapp.com/https://3g.dxy.cn/newh5/view/pneumonia');
+  if (result) {
+    let dataStr = result[1].substr(0, result[1].indexOf(']}catch(e)') + 1);
+    // console.log(dataStr);
+    chinaData = JSON.parse(dataStr);
+    console.log('china', chinaData);
+    showMap();
+  } else {
+    console.log('retry', retry++);
+    setTimeout(() => {
+      request.open('GET', 'https://cors-anywhere.herokuapp.com/https://ncov.dxy.cn/ncovh5/view/pneumonia');
       request.send(null);
-    }
+    }, 1000);
   }
 };
 request.send(null);
