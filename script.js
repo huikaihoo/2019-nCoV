@@ -62,6 +62,7 @@ const locationMap = {
   甘肃: { v: 'CN-62', f: '甘肅' },
   青海: { v: 'CN-63', f: '青海' },
   新疆: { v: 'CN-65', f: '新疆' },
+  SHIP: { v: 'SHIP', f: '🚢 國際郵輪' },
   MAC: { v: 'MO', f: '澳門' },
   HKG: { v: 'HK', f: '香港' },
   ROC: { v: 'TW', f: '台灣' },
@@ -164,7 +165,9 @@ const addRow = (table, record) => {
       } else {
         cell.innerHTML = data.f;
       }
-      cell.innerHTML = countryFlagEmoji.get(data.v).emoji + ' ' + cell.innerHTML;
+      if (countryFlagEmoji.get(data.v)) {
+        cell.innerHTML = countryFlagEmoji.get(data.v).emoji + ' ' + cell.innerHTML;
+      }
     } else {
       cell.innerHTML = data;
     }
@@ -307,9 +310,21 @@ request.onload = function() {
 };
 request.send(null);
 
-jsonp('https://zh.wikipedia.org/w/api.php?action=parse&page=Template:2019%EF%BC%8D2020%E5%B9%B4%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E7%96%AB%E6%83%85%E5%82%B7%E4%BA%A1%E4%BA%BA%E6%95%B8&contentmodel=wikitext&prop=wikitext&format=json', function(data) {
+jsonp('https://zh.wikipedia.org/w/api.php?action=parse&page=Template:2019%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E7%96%AB%E6%83%85%E5%82%B7%E4%BA%A1%E4%BA%BA%E6%95%B8&contentmodel=wikitext&prop=wikitext&format=json', function(data) {
   const regexp = /{{([A-Z]+)}}.*[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|/;
   let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
+
+  const regexpForShip = /(File:Cruise ship side view).*[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|/;
+  let result = str.match(regexpForShip);
+  // console.log(result);
+  let record = {
+    id: 'SHIP',
+    confirm: parseCount(result[2]),
+    dead: parseCount(result[3]),
+  };
+  // console.log(record);
+  worldData.push(record);
+
   // console.log(str);
   while (true) {
     let result = str.match(regexp);
