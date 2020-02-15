@@ -98,6 +98,7 @@ const locationMap = {
   BEL: { v: 'BE', f: '比利時' },
   NKO: { v: 'KP', f: '北韓' },
   DPRK: { v: 'KP', f: '北韓' },
+  EGY: { v: 'EG', f: '埃及' },
 };
 
 const chinaConvert = record => {
