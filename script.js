@@ -311,7 +311,7 @@ request.onload = function() {
 };
 request.send(null);
 
-jsonp('https://zh.wikipedia.org/w/api.php?action=parse&page=Template:2019%E6%96%B0%E5%9E%8B%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E7%96%AB%E6%83%85%E5%82%B7%E4%BA%A1%E4%BA%BA%E6%95%B8&contentmodel=wikitext&prop=wikitext&format=json', function(data) {
+jsonp('https://zh.wikipedia.org/w/api.php?action=parse&page=Template:2019%E5%86%A0%E7%8B%80%E7%97%85%E6%AF%92%E7%97%85%E7%97%85%E4%BE%8B%E6%95%B8&contentmodel=wikitext&prop=wikitext&format=json', function(data) {
   const regexp = /{{([A-Z]+)}}.*[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|[ ]*align=right[ ]*\|([0-9,\(\) ]+)[ \n]*\|/;
   let str = data.parse.wikitext['*'].replace('<sup>*</sup>', '');
 
