@@ -62,7 +62,7 @@ const locationMap = {
   甘肃: { v: 'CN-62', f: '甘肅' },
   青海: { v: 'CN-63', f: '青海' },
   新疆: { v: 'CN-65', f: '新疆' },
-  SHIP: { v: 'SHIP', f: '🚢 國際郵輪' },
+  SHIP: { v: 'SHIP', f: '🚢 鑽石公主號' },
   MAC: { v: 'MO', f: '澳門' },
   HKG: { v: 'HK', f: '香港' },
   ROC: { v: 'TW', f: '台灣' },
@@ -99,6 +99,11 @@ const locationMap = {
   NKO: { v: 'KP', f: '北韓' },
   DPRK: { v: 'KP', f: '北韓' },
   EGY: { v: 'EG', f: '埃及' },
+  IRN: { v: 'IR', f: '伊朗' },
+  IRQ: { v: 'IQ', f: '伊拉克' },
+  ISR: { v: 'IL', f: '以色列' },
+  LBN: { v: 'LB', f: '黎巴嫩' },
+  NPL: { v: 'NP', f: '尼泊爾' },
 };
 
 const chinaConvert = record => {
