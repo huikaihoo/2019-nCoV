@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm run fix && npm run minify",
     "fix": "prettier --write '**/*.{css,js,html}'",
-    "minify": "uglifyjs script.js > script.min.js && mkdir css-dist && css-minify --file index.css && mv css-dist/index.min.css index.min.css && rm -rf css-dist"
+    "minify": "uglifyjs script.js > script.min.js && uglifyjs location.js > location.min.js && mkdir css-dist && css-minify --file index.css && mv css-dist/index.min.css index.min.css && rm -rf css-dist"
   },
   "keywords": [],
   "author": "",
