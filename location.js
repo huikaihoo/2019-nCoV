@@ -116,4 +116,10 @@ const locationMap = {
   LVA: { v: 'LV', f: '拉脫維亞' },
   MAR: { v: 'MA', f: '摩洛哥' },
   SEN: { v: 'SN', f: '塞內加爾' },
+  ARG: { v: 'AR', f: '阿根廷' },
+  CHI: { v: 'CL', f: '智利' },
+  POL: { v: 'UA', f: '烏克蘭' },
+  UKR: { v: 'UA', f: '烏克蘭' },
+  LIE: { v: 'LI', f: '列支敦士登' },
+  FRO: { v: 'FO', f: '法羅群島' },
 };
